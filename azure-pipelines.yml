@@ -11,14 +11,6 @@ pool:
   demands:
     - npm
 
-trigger:
-- '*'
-
-pool:
-  vmImage: 'ubuntu-16.04'
-  demands:
-    - npm
-
 variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
