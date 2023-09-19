@@ -13,8 +13,17 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  PackageFeedEndpoint: 'https://pkgs.dev.azure.com/ramiMSFTDevOps/PsRepository/_packaging/PsRepositoryFeed/nuget/v3/index.json'  # Updated PackageFeedEndpoint URL
+
+  # Construct a JSON object that contains the endpoint URL and the personal access token to pass them to Azure Artifacts credential provider. 
+  PackageFeedEndpointCredential: '{"endpointCredentials": [{"endpoint":"$(PackageFeedEndpoint)", "username":"OPTIONAL", "password":"ACCESS TOKEN"}]}'
 
 steps:
+- task: UseDotNet@2  # Use this task to set the .NET version
+  inputs:
+    packageType: 'sdk'
+    version: '3.x'  # Update to the desired .NET version
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -32,3 +41,19 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+  
+- powershell: |
+    Register-PSRepository -Name "PowershellAzureDevopsServices" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted
+  displayName: 'Register Azure Artifacts Feed as PSRepository'
+  env:
+    VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: $(PackageFeedEndpointCredential)
+
+- powershell: |
+    Install-Module -Name Get-Hello -Repository PowershellAzureDevopsServices -Force
+  displayName: 'Install Get-Hello PowerShell module'
+  env:
+    VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: $(PackageFeedEndpointCredential)
+
+- powershell: |
+    Get-Hello
+  displayName: Execute Get-Hello
