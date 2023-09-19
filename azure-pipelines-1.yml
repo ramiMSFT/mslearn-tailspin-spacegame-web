@@ -13,7 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  PackageFeedEndpoint: 'https://pkgs.dev.azure.com/ramiMSFTDevOps/PsRepository/_packaging/PsRepositoryFeed/nuget/v3/index.json'  # Updated PackageFeedEndpoint URL
+  PackageFeedEndpoint: 'https://pkgs.dev.azure.com/ramiMSFTDevOps/PsRepository/_packaging/PsRepositoryFeed/nuget/v2'  # Updated PackageFeedEndpoint URL
 
   # Construct a JSON object that contains the endpoint URL and the personal access token to pass them to Azure Artifacts credential provider. 
   PackageFeedEndpointCredential: '{"endpointCredentials": [{"endpoint":"$(PackageFeedEndpoint)", "username":"OPTIONAL", "password":"ACCESS TOKEN"}]}'
