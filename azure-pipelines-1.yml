@@ -22,7 +22,7 @@ steps:
 - task: UseDotNet@2  # Use this task to set the .NET version
   inputs:
     packageType: 'sdk'
-    version: '3.x'  # Update to the desired .NET version
+    version: '6.x'  # Update to the desired .NET version
 
 - task: NuGetToolInstaller@1
 
