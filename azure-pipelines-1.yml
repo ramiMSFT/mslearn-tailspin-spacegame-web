@@ -29,6 +29,9 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+- task: NuGetAuthenticate@1
+  inputs:
+    forceReinstallCredentialProvider: true
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
@@ -42,7 +45,7 @@ steps:
     configuration: '$(buildConfiguration)'
   
 - powershell: |
-    Register-PSRepository -Name "PsRepositoryFeed" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted -credential PackageFeedEndpointCredential
+    Register-PSRepository -Name "PsRepositoryFeed" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted 
   displayName: 'Register Azure Artifacts Feed as PSRepository'
   env:
     VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: $(PackageFeedEndpointCredential)
