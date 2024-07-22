@@ -15,7 +15,7 @@ variables:
   buildConfiguration: 'Release'
   PackageFeedEndpoint: 'https://pkgs.dev.azure.com/ramiMSFTDevOps/PsRepository/_packaging/PsRepositoryFeed/nuget/v2'
 
-  PackageFeedEndpointCredential: '{"endpointCredentials": [{"endpoint":"$(PackageFeedEndpoint)", "username":"OPTIONAL", "password":"${env:PATTOKEN}"}]}'
+  PackageFeedEndpointCredential: '{"endpointCredentials": [{"endpoint":"$(PackageFeedEndpoint)", "username":"${env:USERNAME}", "password":"${env:PATTOKEN}"}]}'
 
 steps:
 - task: UseDotNet@2  # Use this task to set the .NET version
@@ -29,9 +29,6 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: NuGetAuthenticate@1
-  inputs:
-    forceReinstallCredentialProvider: true
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
@@ -43,13 +40,23 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-  
-- powershell: |
-    Register-PSRepository -Name "PsRepositoryFeed" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted
-  displayName: 'Register Azure Artifacts Feed as PSRepository'
 
 - powershell: |
-    Install-Module -Name Get-Hello -Repository PsRepositoryFeed -Force
+    iex "& { $(irm https://aka.ms/install-artifacts-credprovider.ps1) }"
+  displayName: 'Install credential provider'
+
+- task: NuGetAuthenticate@1
+  inputs:
+    forceReinstallCredentialProvider: true
+
+- powershell: |
+    Register-PSRepository -Name "PsRepositoryFeed2" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted
+  displayName: 'Register Azure Artifacts Feed as PSRepository'
+  env:
+    VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: $(PackageFeedEndpointCredential)
+
+- powershell: |
+    Install-Module -Name Get-Hello -Repository PsRepositoryFeed2 -Force
   displayName: 'Install Get-Hello PowerShell module'
   env:
     VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: $(PackageFeedEndpointCredential)
