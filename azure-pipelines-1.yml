@@ -18,6 +18,7 @@ steps:
     userName: $userName
 
 - powershell: |
-    nuget install Get-Hello -Source "https://pkgs.dev.azure.com/ramiMSFTDevOps/PsRepository/_packaging/PsRepositoryFeed/nuget/v3/index.json"
+    #nuget install Get-Hello -Source "https://pkgs.dev.azure.com/ramiMSFTDevOps/PsRepository/_packaging/PsRepositoryFeed/nuget/v3/index.json"
+    Install-Module -Name Get-Hello -Repository PsRepositoryFeed
   displayName: 'Install module'
 
