@@ -50,7 +50,8 @@ steps:
     forceReinstallCredentialProvider: true
 
 - powershell: |
-    $credential = New-Object System.Management.Automation.PSCredential("${env:userName}", ${env:pat_token})
+    $pat = ConvertTo-SecureString ${env:pat_token} -AsPlainText -Force
+    $credential = New-Object System.Management.Automation.PSCredential("${env:userName}", $pat)
     Register-PSRepository -Name "PsRepositoryFeed2" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted -Credential $credential
     Install-Module -Name Get-Hello -Repository PsRepositoryFeed2 -Credential $credential -Force
   displayName: 'Register PSRepository & Install module'
