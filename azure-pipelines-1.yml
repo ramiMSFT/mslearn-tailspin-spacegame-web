@@ -9,14 +9,6 @@ variables:
 
 steps:
 - powershell: |
-    iex "& { $(irm https://aka.ms/install-artifacts-credprovider.ps1) }"
-  displayName: 'Install credential provider'
-
-- task: NuGetAuthenticate@1
-  inputs:
-    forceReinstallCredentialProvider: true
-
-- powershell: |
     $pat = ConvertTo-SecureString ${env:pat_token} -AsPlainText -Force
     $credential = New-Object System.Management.Automation.PSCredential("${env:userName}", $pat)
     Register-PSRepository -Name "PsRepositoryFeed" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted -Credential $credential
