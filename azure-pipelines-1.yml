@@ -53,11 +53,12 @@ steps:
     $pat = ConvertTo-SecureString ${env:pat_token} -AsPlainText -Force
     $credential = New-Object System.Management.Automation.PSCredential("${env:userName}", $pat)
     Register-PSRepository -Name "PsRepositoryFeed" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted -Credential $credential
-    Get-PSRepository
-    Find-Module -Repository PsRepositoryFeed
-    Install-Module -Name Get-Hello -Repository PsRepositoryFeed -Credential $credential -Force
   displayName: 'Register PSRepository & Install module'
   env:
     pat_token: $patToken
     userName: $userName
+
+- powershell: |
+    nuget install Get-Hello -Source "https://pkgs.dev.azure.com/ramiMSFTDevOps/PsRepository/_packaging/PsRepositoryFeed/nuget/v3/index.json"
+  displayName: 'Install module'
 
