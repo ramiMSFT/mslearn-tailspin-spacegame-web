@@ -45,10 +45,8 @@ steps:
     configuration: '$(buildConfiguration)'
   
 - powershell: |
-    Register-PSRepository -Name "PsRepositoryFeed" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted 
+    Register-PSRepository -Name "PsRepositoryFeed" -SourceLocation "$(PackageFeedEndpoint)" -InstallationPolicy Trusted -Credential Get-Credential
   displayName: 'Register Azure Artifacts Feed as PSRepository'
-  env:
-    VSS_NUGET_EXTERNAL_FEED_ENDPOINTS: $(PackageFeedEndpointCredential)
 
 - powershell: |
     Install-Module -Name Get-Hello -Repository PsRepositoryFeed -Force
